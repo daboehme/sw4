@@ -1116,14 +1116,14 @@ void EW::AMPI_Sendrecv(float_sw4* a, int scount,
                        std::tuple<int, int, int>& recvt, int recvfrom, int rtag,
                        std::tuple<float_sw4*, float_sw4*>& buf, MPI_Comm comm,
                        MPI_Status* status) {
-  SW4_MARK_FUNCTION;
-  SW4_MARK_BEGIN("THE REST");
+  // SW4_MARK_FUNCTION;
+  // SW4_MARK_BEGIN("THE REST");
   MPI_Request send_req = MPI_REQUEST_NULL, recv_req = MPI_REQUEST_NULL;
 
   int recv_count = std::get<0>(recvt) * std::get<1>(recvt);
   int send_count = std::get<0>(sendt) * std::get<1>(sendt);
 
-  SW4_MARK_END("THE REST");
+  // SW4_MARK_END("THE REST");
 #if defined(ENABLE_MPI_TIMING_BARRIER)
 #if defined(SW4_TRACK_MPI)
   std::chrono::high_resolution_clock::time_point t1, t2;
@@ -1135,7 +1135,7 @@ void EW::AMPI_Sendrecv(float_sw4* a, int scount,
   coll_sm.insert(0, SW4_CHRONO_DURATION_US(t1, t2));
 #endif
 #endif
-  SW4_MARK_BEGIN("MPI_SENDRECV_ACTUAL");
+  // SW4_MARK_BEGIN("MPI_SENDRECV_ACTUAL");
 
   if (sendto != MPI_PROC_NULL) {
     getbuffer_device(a, std::get<0>(buf), sendt, true);
@@ -1169,7 +1169,7 @@ void EW::AMPI_Sendrecv(float_sw4* a, int scount,
   }
   MPI_Status send_status, recv_status;
 
-  SW4_MARK_BEGIN("MPI_RECV_WAIT");
+  // SW4_MARK_BEGIN("MPI_RECV_WAIT");
   if (recvfrom != MPI_PROC_NULL) {
     if (MPI_Wait(&recv_req, &recv_status) != MPI_SUCCESS)
       std::cerr << "MPI_WAIT RECV FAILED IN AMPI_SENDrecv\n";
@@ -1184,9 +1184,9 @@ void EW::AMPI_Sendrecv(float_sw4* a, int scount,
     // for(int i=0;i<10;i++) std::cout<<std::get<1>(buf)[i]<<" ";
     // std::cout<<"\n";
   }
-  SW4_MARK_END("MPI_RECV_WAIT");
+  // SW4_MARK_END("MPI_RECV_WAIT");
 
-  SW4_MARK_BEGIN("MPI_SEND_WAIT");
+  // SW4_MARK_BEGIN("MPI_SEND_WAIT");
   if (sendto != MPI_PROC_NULL)
     if (MPI_Wait(&send_req, &send_status) != MPI_SUCCESS)
       std::cerr << "MPI_WAIT SEND FAILED IN AMPI_SENDrecv\n";
@@ -1194,10 +1194,10 @@ void EW::AMPI_Sendrecv(float_sw4* a, int scount,
 #if defined(SW4_TRACK_MPI)
   if (recvfrom == MPI_PROC_NULL) t2 = SW4_CHRONO_NOW;  // Timing only the send
 #endif
-  SW4_MARK_END("MPI_SEND_WAIT");
+  // SW4_MARK_END("MPI_SEND_WAIT");
 
   SYNC_STREAM;  // For the putbuffer_device
-  SW4_MARK_END("MPI_SENDRECV_ACTUAL");
+  // SW4_MARK_END("MPI_SENDRECV_ACTUAL");
 
 #if defined(SW4_TRACK_MPI)
   size_t size = 0;
@@ -1547,14 +1547,14 @@ void EW::AMPI_Sendrecv2(float_sw4* a, int scount,
                         std::tuple<int, int, int>& recvt, int recvfrom,
                         int rtag, std::tuple<float_sw4*, float_sw4*>& buf,
                         MPI_Comm comm, MPI_Status* status) {
-  SW4_MARK_FUNCTION;
-  SW4_MARK_BEGIN("THE REST2");
+  // SW4_MARK_FUNCTION;
+  // SW4_MARK_BEGIN("THE REST2");
   MPI_Request send_req = MPI_REQUEST_NULL, recv_req = MPI_REQUEST_NULL;
 
   int recv_count = std::get<0>(recvt) * std::get<1>(recvt);
   int send_count = std::get<0>(sendt) * std::get<1>(sendt);
 
-  SW4_MARK_END("THE REST2");
+  // SW4_MARK_END("THE REST2");
 #if defined(ENABLE_MPI_TIMING_BARRIER)
 #if defined(SW4_TRACK_MPI)
   std::chrono::high_resolution_clock::time_point t1, t2;
@@ -1566,7 +1566,7 @@ void EW::AMPI_Sendrecv2(float_sw4* a, int scount,
   coll_sm.insert(2, SW4_CHRONO_DURATION_US(t1, t2));
 #endif
 #endif
-  SW4_MARK_BEGIN("MPI_SENDRECV_ACTUAL2");
+  // SW4_MARK_BEGIN("MPI_SENDRECV_ACTUAL2");
 
   if (sendto != MPI_PROC_NULL) {
 #if defined(SW4_TRACK_MPI)
@@ -1589,12 +1589,12 @@ void EW::AMPI_Sendrecv2(float_sw4* a, int scount,
   t1 = SW4_CHRONO_NOW;
 #endif
   // std::cout<<"send_count "<<send_count<<" recv_count "<<recv_count<<"\n";
-  SW4_MARK_BEGIN("MPI_IRECV");
+  // SW4_MARK_BEGIN("MPI_IRECV");
   if (recvfrom != MPI_PROC_NULL)
     if (MPI_Irecv(std::get<1>(buf), recv_count, MPI_DOUBLE, recvfrom, rtag,
                   comm, &recv_req) != MPI_SUCCESS)
       std::cerr << "MPI_Irecv failed in EW::AMPI_Sendrecv\n";
-  SW4_MARK_END("MPI_IRECV");
+  // SW4_MARK_END("MPI_IRECV");
   if (sendto != MPI_PROC_NULL) {
     // getbuffer_device(a,std::get<0>(buf),sendt);
     // std::cout<<"SENDING :: "<<sendto<<" ";
@@ -1607,7 +1607,7 @@ void EW::AMPI_Sendrecv2(float_sw4* a, int scount,
   }
   MPI_Status send_status, recv_status;
 
-  SW4_MARK_BEGIN("MPI_RECV_WAIT2");
+  // SW4_MARK_BEGIN("MPI_RECV_WAIT2");
   if (recvfrom != MPI_PROC_NULL) {
     if (MPI_Wait(&recv_req, &recv_status) != MPI_SUCCESS)
       std::cerr << "MPI_WAIT RECV FAILED IN AMPI_SENDrecv\n";
@@ -1633,13 +1633,13 @@ void EW::AMPI_Sendrecv2(float_sw4* a, int scount,
     // for(int i=0;i<10;i++) std::cout<<std::get<1>(buf)[i]<<" ";
     // std::cout<<"\n";
   }
-  SW4_MARK_END("MPI_RECV_WAIT2");
+  // SW4_MARK_END("MPI_RECV_WAIT2");
 
-  SW4_MARK_BEGIN("MPI_SEND_WAIT2");
+  // SW4_MARK_BEGIN("MPI_SEND_WAIT2");
   if (sendto != MPI_PROC_NULL)
     if (MPI_Wait(&send_req, &send_status) != MPI_SUCCESS)
       std::cerr << "MPI_WAIT SEND FAILED IN AMPI_SENDrecv\n";
-  SW4_MARK_END("MPI_SEND_WAIT2");
+  // SW4_MARK_END("MPI_SEND_WAIT2");
 
 #if defined(SW4_TRACK_MPI)
   if (recvfrom == MPI_PROC_NULL) t2 = SW4_CHRONO_NOW;  // Timing only the send
@@ -1647,7 +1647,7 @@ void EW::AMPI_Sendrecv2(float_sw4* a, int scount,
 
   // SYNC_STREAM;
 
-  SW4_MARK_END("MPI_SENDRECV_ACTUAL2");
+  // SW4_MARK_END("MPI_SENDRECV_ACTUAL2");
 #if defined(SW4_TRACK_MPI)
   size_t size = 0;
   if (sendto != MPI_PROC_NULL) size += send_count;

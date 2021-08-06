@@ -22,6 +22,7 @@ endif()
 option (ENABLE_PROJ4 "PROJ4 Library")
 option (ENABLE_HDF5  "HDF5 Library")
 option (ENABLE_UMPIRE  "Umpire Library")
+option (ENABLE_CALIPER "Caliper Library")
 
 # set options for the RAJA submodule build
 set (ENABLE_TESTS Off CACHE BOOL "" FORCE)
@@ -50,6 +51,15 @@ else ()
   add_subdirectory(tpl/RAJA)
 endif ()
 
+if (ENABLE_CALIPER)
+  find_package(caliper REQUIRED)
+  blt_import_library(NAME     sw4_caliper
+                   TREAT_INCLUDES_AS_SYSTEM Off
+                   DEFINES    SW4_ENABLE_CALIPER
+                   INCLUDES   ${caliper_INCLUDE_DIR}
+                   LIBRARIES  caliper
+                   EXPORTABLE ON)
+endif()
 
 MACRO (TODAY RESULT)
     IF (WIN32)
@@ -99,6 +109,9 @@ else()
   MESSAGE(WARNING "SW4 will be built without Umpire")
 endif()
 
+if (ENABLE_CALIPER)
+  MESSAGE(STATUS "SW4 will be built with Caliper")
+endif()
 
 if (ENABLE_CUDA)
   SET(CMAKE_CUDA_FLAGS  "${CMAKE_CUDA_FLAGS} ${SW4_BASE_COMPILE_FLAGS} ${SW4_OPT_COMPILE_FLAGS}")

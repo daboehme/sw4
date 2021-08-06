@@ -42,6 +42,7 @@
 #include <sstream>
 #include <string>
 
+#include "caliper.h"
 #include "EW.h"
 #include "Mspace.h"
 #include "policies.h"
@@ -114,6 +115,8 @@ int main(int argc, char **argv) {
 #if defined(SW4_SIGNAL_CHECKPOINT)
   std::signal(SIGUSR1, signal_handler);
 #endif
+
+  SW4_MARK_BEGIN("main");
 
 #ifdef SW4_USE_UMPIRE
   umpire::ResourceManager &rma = umpire::ResourceManager::getInstance();
@@ -392,6 +395,8 @@ int main(int argc, char **argv) {
 #ifdef USE_SZ
   H5Z_SZ_Finalize();
 #endif
+
+  SW4_MARK_END("main");
 
   // Stop MPI
   MPI_Finalize();
