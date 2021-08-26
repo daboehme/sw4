@@ -1530,6 +1530,7 @@ void rhs4th3fortsgstr_ci(
     // printf("END LOOP1\n");
     SW4_MARK_END("rhs4th3fortsgstr_ci::LOOP1");
     if (onesided[4] == 1) {
+      SW4_MARK_BEGIN("rhs4th3fortsgstr_ci::LOOP2");
 #if !defined(RAJA_ONLY)
       Range<16> I(ifirst + 2, ilast - 1);
       Range<4> J(jfirst + 2, jlast - 1);
@@ -1540,7 +1541,6 @@ void rhs4th3fortsgstr_ci(
       RAJA::RangeSegment j_range(jfirst + 2, jlast - 1);
       RAJA::RangeSegment i_range(ifirst + 2, ilast - 1);
 
-      SW4_MARK_BEGIN("rhs4th3fortsgstr_ci::LOOP2");
       // printf("START LOOP2 \n");
 
       RAJA::kernel<
@@ -1864,18 +1864,16 @@ void rhs4th3fortsgstr_ci(
     }
     if (onesided[5] == 1) {
       // printf("START LOOP3 \n");
+      SW4_MARK_BEGIN("rhs4th3fortsgstr_ci::LOOP3");
 #if !defined(RAJA_ONLY)
       Range<16> I(ifirst + 2, ilast - 1);
       Range<4> J(jfirst + 2, jlast - 1);
       Range<4> K(nk - 5, nk + 1);
-      SW4_MARK_BEGIN("rhs4th3fortsgstr_ci::LOOP3");
       forall3async(I, J, K, [=] RAJA_DEVICE(int i, int j, int k) {
 #else
       RAJA::RangeSegment k_range(nk - 5, nk + 1);
       RAJA::RangeSegment j_range(jfirst + 2, jlast - 1);
       RAJA::RangeSegment i_range(ifirst + 2, ilast - 1);
-
-      SW4_MARK_BEGIN("rhs4th3fortsgstr_ci::LOOP3");
 
       RAJA::kernel<
           RHS4TH3_POL2_ASYNC>(RAJA::make_tuple(k_range, j_range, i_range), [=] RAJA_DEVICE(
@@ -2902,6 +2900,8 @@ void ve_bndry_stress_curvi_ci(
     k = nz;
     kl = -1;
   }
+  
+  SW4_MARK_END("HOST CODE");
   //#pragma omp parallel
   {
     //
@@ -2911,7 +2911,6 @@ void ve_bndry_stress_curvi_ci(
     // 	 for( int i=ifirst+2 ; i<=ilast-2 ; i++ )
     // 	 {
 
-    SW4_MARK_END("HOST CODE");
 
 #if !defined(RAJA_ONLY)  // Fine
     Range<16> I(ifirst + 2, ilast - 1);

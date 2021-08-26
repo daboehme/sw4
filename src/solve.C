@@ -902,9 +902,11 @@ void EW::solve(vector<Source*>& a_Sources, vector<TimeSeries*>& a_TimeSeries,
     global_variables.current_step = currentTimeStep;
     if (currentTimeStep == mNumberOfTimeSteps[event]) t1 = SW4_CHRONO_NOW;
     if (currentTimeStep == (beginCycle + 2)) print_hwm(getRank());
+    bool end_clean_time_reg = false;
     if (currentTimeStep == (beginCycle + 10)) {
       PROFILER_START;
       SW4_MARK_BEGIN("CLEAN_TIME");
+      end_clean_time_reg = true;
 #ifdef SW4_TRACK_MPI
       t6 = SW4_CHRONO_NOW;
       ProfilerOn = true;
@@ -1125,9 +1127,9 @@ void EW::solve(vector<Source*>& a_Sources, vector<TimeSeries*>& a_TimeSeries,
       }
 #endif
 
-      SW4_MARK_BEGIN("MPI_WTIME");
+      // SW4_MARK_BEGIN("MPI_WTIME");
       if (m_output_detailed_timing) time_measure[7] = MPI_Wtime();
-      SW4_MARK_END("MPI_WTIME");
+      // SW4_MARK_END("MPI_WTIME");
       // test: precompute F_tt(t)
       Force_tt(t, F, point_sources, identsources);
 
@@ -1519,8 +1521,10 @@ void EW::solve(vector<Source*>& a_Sources, vector<TimeSeries*>& a_TimeSeries,
       SW4_PEEK;
       SYNC_DEVICE;
     }
+    if (end_clean_time_reg) {
+      SW4_MARK_END("CLEAN_TIME");
+    }
   }  // end time stepping loop
-  SW4_MARK_END("CLEAN_TIME");
   SW4_MARK_END("TIME_STEPPING");
 
   // Calculate stats for first time step
